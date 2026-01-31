@@ -392,21 +392,35 @@
             <p class="product-subtitle">جو هادئ وراحة نفسية في كل مكان ✨</p>
             
             <!-- Product Gallery -->
-            <div class="gallery">
+            <div class="gallery" id="gallery">
                 <div class="gallery-item">
                     <img src="https://raw.githubusercontent.com/qwfjdwhi-source/tradeline/main/product1.jpg" alt="فواحة الاسترخاء" onerror="this.src='https://via.placeholder.com/400x300/1a1a2e/e94560?text=فواحة+1'">
                 </div>
                 <div class="gallery-item">
                     <img src="https://raw.githubusercontent.com/qwfjdwhi-source/tradeline/main/product2.jpg" alt="فواحة LED" onerror="this.src='https://via.placeholder.com/400x300/16213e/e94560?text=فواحة+2'">
                 </div>
-                <div class="gallery-item video">
+                <div class="gallery-item video" onclick="openVideo()" style="cursor:pointer;">
                     <img src="https://raw.githubusercontent.com/qwfjdwhi-source/tradeline/main/product-video-frame.jpg" alt="فيديو الفواحة" onerror="this.src='https://via.placeholder.com/400x300/0f3460/e94560?text=فيديو+الفواحة'">
                     <div class="play-btn">▶</div>
                 </div>
             </div>
             
+            <!-- Video Modal -->
+            <div id="videoModal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.95); z-index:9999; justify-content:center; align-items:center;">
+                <div style="position:relative; max-width:90%; text-align:center; padding:40px;">
+                    <h2 style="color:#e94560; margin-bottom:20px;">🎬 الفيديو</h2>
+                    <p style="color:#fff; margin-bottom:30px; font-size:18px;">شوف الفواحة شغالة في الفيديو اللي بعتته على واتساب!</p>
+                    <a href="https://wa.me/201016508870?text=ممكن%20الفيديو%20بتاع%20الفواحة" 
+                       class="cta-button" target="_blank" style="font-size:18px; padding:15px 30px; margin:10px;">
+                        <i class="fab fa-whatsapp"></i> اطلب الفيديو على واتساب
+                    </a>
+                    <br><br>
+                    <button onclick="closeVideo()" style="background:#333; color:#fff; border:none; padding:10px 30px; border-radius:5px; cursor:pointer; font-size:16px;">✕ إغلاق</button>
+                </div>
+            </div>
+            
             <!-- Price Section -->
-            <div class="price-section">
+            <div class="price-section" id="price-section">
                 <div class="price-tag">
                     250 <span class="price-currency">جنيه</span>
                 </div>
@@ -508,15 +522,20 @@
     </section>
     
     <!-- Quick Actions -->
-    <section class="quick-actions">
+    <section class="quick-actions" id="quick-actions">
         <div class="container">
             <h2>اختيارات سريعة</h2>
             <div class="action-buttons">
-                <button class="action-btn active">🌸 مميزات الفواحة</button>
-                <button class="action-btn">💰 السعر</button>
-                <button class="action-btn">🛍 أطلب دلوقتي</button>
-                <button class="action-btn">🚚 التوصيل</button>
-                <button class="action-btn">🎁 الفيديو والصور</button>
+                <button class="action-btn" onclick="scrollToSection('features')">🌸 مميزات الفواحة</button>
+                <button class="action-btn" onclick="scrollToSection('price-section')">💰 السعر</button>
+                <button class="action-btn" onclick="scrollToSection('order-info')">🛍 أطلب دلوقتي</button>
+                <button class="action-btn" onclick="showDelivery()">🚚 التوصيل</button>
+                <button class="action-btn" onclick="scrollToSection('gallery')">🎁 الفيديو والصور</button>
+            </div>
+            <div id="delivery-info" style="display:none; margin-top:20px; padding:20px; background:rgba(76,175,80,0.2); border-radius:15px; border:1px solid #4CAF50;">
+                <p>🚚 <strong>التوصيل متاح لكل المحافظات</strong></p>
+                <p>⏰ <strong>التوصيل خلال يومين عمل إن شاء الله</strong></p>
+                <p>💰 <strong>السعر شامل التوصيل: 250 جنيه فقط</strong></p>
             </div>
         </div>
     </section>
@@ -533,5 +552,49 @@
        class="whatsapp-float" target="_blank">
         <i class="fab fa-whatsapp"></i>
     </a>
+    
+    <script>
+        // Scroll to section function
+        function scrollToSection(sectionId) {
+            const section = document.getElementById(sectionId);
+            if (section) {
+                section.scrollIntoView({ behavior: 'smooth' });
+            }
+        }
+        
+        // Show delivery info
+        function showDelivery() {
+            const deliveryInfo = document.getElementById('delivery-info');
+            if (deliveryInfo.style.display === 'none') {
+                deliveryInfo.style.display = 'block';
+                deliveryInfo.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            } else {
+                deliveryInfo.style.display = 'none';
+            }
+        }
+        
+        // Open video modal
+        function openVideo() {
+            const modal = document.getElementById('videoModal');
+            modal.style.display = 'flex';
+            document.body.style.overflow = 'hidden';
+        }
+        
+        // Close video modal
+        function closeVideo() {
+            const modal = document.getElementById('videoModal');
+            const video = modal.querySelector('video');
+            video.pause();
+            modal.style.display = 'none';
+            document.body.style.overflow = 'auto';
+        }
+        
+        // Close modal on outside click
+        document.getElementById('videoModal').addEventListener('click', function(e) {
+            if (e.target === this) {
+                closeVideo();
+            }
+        });
+    </script>
 </body>
 </html>
