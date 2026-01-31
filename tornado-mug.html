@@ -85,11 +85,122 @@
             object-fit: cover;
             border-radius: 15px;
             border: 2px solid rgba(254,202,87,0.3);
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .product-gallery img:hover {
+            border-color: #feca57;
+            transform: scale(1.02);
         }
         
         .product-gallery img:first-child {
             grid-column: span 2;
             height: 300px;
+        }
+        
+        /* Lightbox Popup */
+        .lightbox {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.95);
+            z-index: 9999;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+        
+        .lightbox.active {
+            display: flex;
+        }
+        
+        .lightbox-content {
+            position: relative;
+            max-width: 90%;
+            max-height: 90%;
+        }
+        
+        .lightbox-img {
+            max-width: 100%;
+            max-height: 85vh;
+            border-radius: 10px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+        }
+        
+        .lightbox-close {
+            position: absolute;
+            top: -50px;
+            right: 0;
+            background: rgba(255,255,255,0.2);
+            color: #fff;
+            border: none;
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            font-size: 20px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+        }
+        
+        .lightbox-close:hover {
+            background: #feca57;
+            color: #000;
+        }
+        
+        .lightbox-nav {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            background: rgba(255,255,255,0.2);
+            color: #fff;
+            border: none;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            font-size: 20px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+        }
+        
+        .lightbox-nav:hover {
+            background: #feca57;
+            color: #000;
+        }
+        
+        .lightbox-prev {
+            left: -70px;
+        }
+        
+        .lightbox-next {
+            right: -70px;
+        }
+        
+        .lightbox-counter {
+            position: absolute;
+            bottom: -40px;
+            left: 50%;
+            transform: translateX(-50%);
+            color: #fff;
+            font-size: 16px;
+            background: rgba(255,255,255,0.2);
+            padding: 8px 20px;
+            border-radius: 20px;
+        }
+        
+        @media (max-width: 700px) {
+            .lightbox-prev { left: 10px; }
+            .lightbox-next { right: 10px; }
+            .lightbox-nav { width: 40px; height: 40px; font-size: 16px; }
         }
         
         .product-details h1 {
@@ -409,11 +520,88 @@
         </div>
     </section>
     
+    <!-- Lightbox Popup -->
+    <div class="lightbox" id="lightbox">
+        <div class="lightbox-content">
+            <button class="lightbox-close" onclick="closeLightbox()">
+                <i class="fas fa-times"></i>
+            </button>
+            <button class="lightbox-nav lightbox-prev" onclick="prevImage()">
+                <i class="fas fa-chevron-right"></i>
+            </button>
+            <img src="" alt="" class="lightbox-img" id="lightbox-img">
+            <button class="lightbox-nav lightbox-next" onclick="nextImage()">
+                <i class="fas fa-chevron-left"></i>
+            </button>
+            <div class="lightbox-counter" id="lightbox-counter">1 / 4</div>
+        </div>
+    </div>
+
     <footer>
         <div class="container">
             <p>© 2026 تريد لايت | جميع الحقوق محفوظة</p>
             <p>للتواصل: +20 10 16508870</p>
         </div>
     </footer>
+
+    <script>
+        // Gallery images (excluding video)
+        const galleryImages = [
+            'https://raw.githubusercontent.com/qwfjdwhi-source/tradeline/main/mug-tornado.jpg',
+            'https://raw.githubusercontent.com/qwfjdwhi-source/tradeline/main/mug-tornado-2.jpg',
+            'https://raw.githubusercontent.com/qwfjdwhi-source/tradeline/main/mug-2d9bc134.jpg',
+            'https://raw.githubusercontent.com/qwfjdwhi-source/tradeline/main/mug-943f0da9.jpg'
+        ];
+        
+        let currentImageIndex = 0;
+        const lightbox = document.getElementById('lightbox');
+        const lightboxImg = document.getElementById('lightbox-img');
+        const lightboxCounter = document.getElementById('lightbox-counter');
+        
+        // Add click event to gallery images only (not video)
+        document.querySelectorAll('.product-gallery img').forEach((img, index) => {
+            img.addEventListener('click', () => openLightbox(index));
+        });
+        
+        function openLightbox(index) {
+            currentImageIndex = index;
+            updateLightboxImage();
+            lightbox.classList.add('active');
+            document.body.style.overflow = 'hidden';
+        }
+        
+        function closeLightbox() {
+            lightbox.classList.remove('active');
+            document.body.style.overflow = '';
+        }
+        
+        function nextImage() {
+            currentImageIndex = (currentImageIndex + 1) % galleryImages.length;
+            updateLightboxImage();
+        }
+        
+        function prevImage() {
+            currentImageIndex = (currentImageIndex - 1 + galleryImages.length) % galleryImages.length;
+            updateLightboxImage();
+        }
+        
+        function updateLightboxImage() {
+            lightboxImg.src = galleryImages[currentImageIndex];
+            lightboxCounter.textContent = `${currentImageIndex + 1} / ${galleryImages.length}`;
+        }
+        
+        // Close on background click
+        lightbox.addEventListener('click', (e) => {
+            if (e.target === lightbox) closeLightbox();
+        });
+        
+        // Keyboard navigation
+        document.addEventListener('keydown', (e) => {
+            if (!lightbox.classList.contains('active')) return;
+            if (e.key === 'Escape') closeLightbox();
+            if (e.key === 'ArrowRight') prevImage();
+            if (e.key === 'ArrowLeft') nextImage();
+        });
+    </script>
 </body>
 </html>
